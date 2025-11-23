@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Admin Upload</title>
+</head>
+<body>
+
+<h2>Upload Lesson File (PDF or Image)</h2>
+
+<input id="fileInput" type="file" />
+<button onclick="upload()">Upload</button>
+
+<p id="result"></p>
+
+<script>
+async function upload() {
+    const fileInput = document.getElementById("fileInput");
+    const file = fileInput.files[0];
+
+    const formData = new FormData();
+    formData.append("file", file);
+
+    const res = await fetch("http://localhost:3000/api/upload", {
+        method: "POST",
+        body: formData
+    });
+
+    const data = await res.json();
+    document.getElementById("result").innerText = JSON.stringify(data);
+}
+</script>
+
+</body>
+</html>
