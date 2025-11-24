@@ -16,5 +16,14 @@
     "express": "^5.1.0",
     "mongoose": "^9.0.0",
     "multer": "^2.0.2"
-  }
+  },
+  "devDependencies": {},
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/ProgrammerTon/CPEKUOpenHouse.git"
+  },
+  "bugs": {
+    "url": "https://github.com/ProgrammerTon/CPEKUOpenHouse/issues"
+  },
+  "homepage": "https://github.com/ProgrammerTon/CPEKUOpenHouse#readme"
 }
