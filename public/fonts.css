@@ -1,0 +1,19 @@
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
+
+:root {
+    --font-angsana: "Angsana New", Times, serif; 
+    --font-sarabun: "TH Sarabun New", "TH Sarabun PSK", sans-serif; 
+    --font-roboto: 'Roboto', sans-serif; 
+}
+
+h1 {
+    font-family: var(--font-sarabun);
+    color: #333333; 
+}
+
+
+/*
+body {
+    font-family: var(--font-roboto);
+}
+*/
