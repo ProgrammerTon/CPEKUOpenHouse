@@ -5,28 +5,30 @@ import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import Container from 'react-bootstrap/Container';
 import 'bootstrap/dist/css/bootstrap.min.css';
+import main_background from './assets/main_background.png';
 
 function App() {
-  return (
-    <div>
-      {/* ใช้ Component จาก react-bootstrap */}
-      <Navbar bg="primary" variant="dark" expand="lg">
-        <Container>
-          <Navbar.Brand href="#home">Best 2x2 App</Navbar.Brand>
-          <Navbar.Toggle aria-controls="basic-navbar-nav" />
-          <Navbar.Collapse id="basic-navbar-nav">
-            <Nav className="me-auto">
-              <Nav.Link href="#home">หน้าแรก</Nav.Link>
-              <Nav.Link href="#link">ฟีเจอร์</Nav.Link>
-            </Nav>
-          </Navbar.Collapse>
-        </Container>
-      </Navbar>
+  const verticalAdjustment = '2%';
 
-      {/* เนื้อหา */}
-      <div className='p-3'>
-        <h1 className='font-sarabun text-primary'>Hello Best 2x2 with React Yay!</h1>
-      </div>
+  const backgroundStyle = {
+    minHeight: '100vh',
+    backgroundImage: `url(${main_background})`,
+    backgroundSize: 'cover',
+    backgroundPosition: 'center',
+    backgroundRepeat: 'no-repeat',
+    // เพิ่ม display flex และ flex-direction column เพื่อให้ใช้ justify-content/align-items ได้
+    display: 'flex', 
+    flexDirection: 'column', 
+    // จัดวางเนื้อหาใน div ให้อยู่ตรงกลางทั้งแนวตั้งและแนวนอน
+    alignItems: 'center',
+    paddingTop: verticalAdjustment,
+  };
+
+  return (
+    <div style={backgroundStyle}>
+      <h1 className='font-sarabun text-success text-center display-1'>
+        CPEKU OPENHOUSE
+      </h1>
     </div>
   );
 }
