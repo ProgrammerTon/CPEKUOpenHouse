@@ -1,0 +1,59 @@
+/* กำหนดขนาดและการจัดวางของแต่ละช่อง (วงกลม+คำอธิบาย) */
+.path-item {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  /* กำหนดความกว้างของแต่ละช่อง เพื่อให้ 3 วงเรียงกันได้สวยงาม */
+  /* ใน Desktop อาจใช้ 30% */
+  width: 25%; 
+  /* ระยะห่างด้านข้าง */
+  margin: 10%; 
+}
+
+/* ภาชนะบรรจุวงกลมหลัก */
+.circle-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 4%; /* ระยะห่างระหว่างวงกลมกับคำอธิบาย */
+}
+
+/* รูปทรงวงกลม */
+.circle-shape {
+  width: 250px; 
+  height: 250px; 
+  border-radius: 50%; 
+  background-color: var(--blue-dark); 
+  /* ทำให้รูปภาพอยู่ตรงกลาง */
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  /* เพิ่มเงาหรือขอบเพื่อให้ดูมีมิติ */
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2); 
+  overflow: hidden; /* ซ่อนส่วนของรูปภาพที่เกินวงกลม */
+}
+
+/* สไตล์รูปภาพภายในวงกลม */
+.circle-image {
+  width: 100%; /* ให้รูปภาพเต็มความกว้างของวงกลม */
+  height: 100%; /* ให้รูปภาพเต็มความสูงของวงกลม */
+  object-fit: cover; /* ทำให้รูปภาพครอบคลุมพื้นที่วงกลมโดยไม่เสียสัดส่วน */
+  opacity: 0.6; /* ปรับความโปร่งแสงเพื่อให้เห็นสีพื้นหลังของวงกลมตามภาพตัวอย่าง */
+}
+
+/* สไตล์คำอธิบายด้านล่าง */
+.description-text {
+  /* ปรับขนาดตัวอักษรและความหนา */
+  font-size: 1.1rem;
+  font-weight: 500;
+  line-height: 1.4;
+  max-width: 250px; 
+}
+
+/* ปรับสำหรับหน้าจอขนาดเล็ก (Mobile) */
+@media (max-width: 1024px) {
+    .path-item {
+        margin: 30px 0; /* เพิ่มระยะห่างแนวตั้งเมื่ออยู่บนมือถือ */
+        width: 80%;
+    }
+}

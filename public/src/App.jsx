@@ -6,6 +6,7 @@ import Nav from 'react-bootstrap/Nav';
 import Container from 'react-bootstrap/Container';
 import 'bootstrap/dist/css/bootstrap.min.css';
 import main_background from './assets/main_background.png';
+import PathSelection from './components/PathSelection.jsx';
 
 function App() {
   const verticalAdjustment = '2%';
@@ -29,6 +30,7 @@ function App() {
       <h1 className='font-kanit text-main text-center'>
         CPEKU OPENHOUSE
       </h1>
+      <PathSelection/>
     </div>
   );
 }
