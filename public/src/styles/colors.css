@@ -14,6 +14,14 @@
     background-color: #6c757d;
 }
 
-.text-success {
-    color: #28a745; 
+.text-main {
+    color: #b7ffc6; 
+    font-weight: bold; 
+    font-size: 86px;
+
+    text-shadow: 
+        0 0 10px #28a745, 
+        0 0 20px #28a745, 
+        0 0 40px #28a745, 
+        0 0 80px #28a745; 
 }

@@ -26,7 +26,7 @@ function App() {
 
   return (
     <div style={backgroundStyle}>
-      <h1 className='font-sarabun text-success text-center display-1'>
+      <h1 className='font-kanit text-main text-center'>
         CPEKU OPENHOUSE
       </h1>
     </div>
