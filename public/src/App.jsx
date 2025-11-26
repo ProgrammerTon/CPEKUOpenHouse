@@ -9,10 +9,8 @@ import main_background from './assets/main_background.png';
 import PathSelection from './components/PathSelection.jsx';
 
 function App() {
-  const verticalAdjustment = '2%';
 
   const backgroundStyle = {
-    minHeight: '100vh',
     backgroundImage: `url(${main_background})`,
     backgroundSize: 'cover',
     backgroundPosition: 'center',
@@ -22,7 +20,8 @@ function App() {
     flexDirection: 'column', 
     // จัดวางเนื้อหาใน div ให้อยู่ตรงกลางทั้งแนวตั้งและแนวนอน
     alignItems: 'center',
-    paddingTop: verticalAdjustment,
+    paddingTop: '2%',
+    boxSizing: 'border-box',
   };
 
   return (

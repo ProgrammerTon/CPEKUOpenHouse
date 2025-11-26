@@ -1,5 +1,6 @@
 @import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;700&display=swap');
-@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@700&display=swap" rel="stylesheet');
+@import url('https://fonts.googleapis.com/css2?family=Kanit:wght@700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Noto+Sans+Thai:wght@400;700&display=swap');
 
 .font-angsana {
     font-family: "Angsana New", Times, serif; 
@@ -15,4 +16,12 @@
 
 .font-kanit {
     font-family: "Kanit", sans-serif; 
+}
+
+.font-freesia {
+    font-family: "Freesia UPC", sans-serif; 
+}
+
+.font-sans {
+    font-family: 'Noto Sans Thai', sans-serif; 
 }

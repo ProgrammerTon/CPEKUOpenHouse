@@ -3,7 +3,7 @@ import CircleItem from './CircleItem';
 import { Container } from 'react-bootstrap';
 
 import path_image_1 from '../assets/path1.png'; 
-import path_image_2 from '../assets/path1.png'; 
+import path_image_2 from '../assets/path2.png'; 
 import path_image_3 from '../assets/path1.png'; 
 
 import measureWindowSize from '../hooks/measureWindowSize';
@@ -11,7 +11,7 @@ import measureWindowSize from '../hooks/measureWindowSize';
 function PathSelection() {
     const { width } = measureWindowSize(); 
 
-    const circleSize = width * 0.25; 
+    const circleSize = width * 0.24; 
     
     if (!width) {
         return null;
@@ -20,7 +20,7 @@ function PathSelection() {
     const pathData = [
     {
         image: path_image_1,
-        description: "เดินสำรวจอาคารภาควิชา วิศวกรรมคอมพิวเตอร์อันเป็นที่รัก"
+        description: "เดินสำรวจอาคารภาควิชา วิศวกรรมคอมพิวเตอร์\nอันเป็นที่รัก"
     },
     {
         image: path_image_2,
@@ -35,7 +35,7 @@ function PathSelection() {
     return (
         <Container style={styles.mainContainer} className="d-flex flex-column align-items-center">
             <h2 
-                className="font-kanit text-main text-center mb-5" 
+                className="font-sans text-center" 
                 style={styles.title}
             >
                 เลือกเส้นทางที่คุณต้องการ
@@ -57,12 +57,18 @@ function PathSelection() {
 
 const styles = {
     title: {
-        fontSize: '2vw',
+        fontSize: '3vw',
         fontWeight: 'bold',
+        marginTop: '5vw',
     },
     mainContainer: {
     },
     pathsContainer: {
+        display: 'flex',
+        flexWrap: 'nowrap',
+        justifyContent: 'center',
+        alignItems: 'flex-start',
+        marginTop: '-6vw'
     }
 };
 
