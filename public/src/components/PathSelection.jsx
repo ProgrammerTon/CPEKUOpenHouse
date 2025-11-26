@@ -4,7 +4,7 @@ import { Container } from 'react-bootstrap';
 
 import path_image_1 from '../assets/path1.png'; 
 import path_image_2 from '../assets/path2.png'; 
-import path_image_3 from '../assets/path1.png'; 
+import path_image_3 from '../assets/path3.png'; 
 
 import measureWindowSize from '../hooks/measureWindowSize';
 
