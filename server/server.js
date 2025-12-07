@@ -1,9 +1,11 @@
+// server.js
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
 import * as dotenv from 'dotenv'; 
 
-import itemRoutes from './routes/itemRoutes.js'; 
+// import Routes ต่างๆ
+import courseRoutes from './routes/courseRoutes.js'; 
 
 // โหลดตัวแปรจาก .env
 dotenv.config();
@@ -27,11 +29,11 @@ mongoose.connect(MONGO_URL)
 
 // กำหนด Routing
 app.get('/', (req, res) => {
-    res.send('Server is running! API is available at /api/items');
+    res.send('Server is running! API is available at /api/courses'); 
 });
 
-// กำหนดเส้นทางสำหรับ Item APIs
-app.use('/api/items', itemRoutes);
+// กำหนดเส้นทางสำหรับ APIs
+app.use('/api/courses', courseRoutes); 
 
 
 // เริ่มต้น Server
