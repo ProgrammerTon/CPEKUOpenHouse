@@ -20,15 +20,18 @@ function PathSelection() {
     const pathData = [
     {
         image: path_image_1,
-        description: "เดินสำรวจอาคารภาควิชา วิศวกรรมคอมพิวเตอร์\nอันเป็นที่รัก"
+        description: "เดินสำรวจอาคารภาควิชา วิศวกรรมคอมพิวเตอร์\nอันเป็นที่รัก",
+        path_index: 1
     },
     {
         image: path_image_2,
-        description: "เรียนรู้กับอาจารย์และ ทดสอบความสามารถ"
+        description: "เรียนรู้กับอาจารย์และ ทดสอบความสามารถ",
+        path_index: 2
     },
     {
         image: path_image_3,
-        description: "คลี่คลายข้อสงสัยให้กระจ่าง พร้อมแชทบอทที่ช่วยชี้แจงแถลงไข" 
+        description: "คลี่คลายข้อสงสัยให้กระจ่าง พร้อมแชทบอทที่ช่วยชี้แจงแถลงไข",
+        path_index: 3
     },
     ];
 
@@ -48,6 +51,7 @@ function PathSelection() {
                         imagePath={path.image}
                         description={path.description}
                         circleSize={circleSize}
+                        path_index={path.path_index}
                     />
                 ))}
             </div>

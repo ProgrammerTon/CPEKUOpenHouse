@@ -1,28 +1,24 @@
 import React from 'react';
-import './styles/fonts.css';
-import './styles/colors.css';
 import Navbar from 'react-bootstrap/Navbar';
 import Nav from 'react-bootstrap/Nav';
 import Container from 'react-bootstrap/Container';
 import 'bootstrap/dist/css/bootstrap.min.css';
-import main_background from './assets/main_background.png';
-import PathSelection from './components/PathSelection.jsx';
-import MainArchive from './user/mainArchive.jsx';
-import { Routes, Route } from 'react-router-dom';
-
-function App() {
+import main_background from '../assets/main_background.png';
+import PathSelection
+ from '../components/PathSelection';
+ 
+function MainArchive() {
 
   return (
     <div style={styles.backgroundStyle}>
       <h1 className='font-kanit text-main text-center'>
-        CPEKU OPENHOUSE
+        เลือกเนื้อหาที่คุณสนใจ
       </h1>
-      <PathSelection/>
     </div>
   );
 }
 
-export default App;
+export default MainArchive;
 
 const styles = {
     backgroundStyle: {
