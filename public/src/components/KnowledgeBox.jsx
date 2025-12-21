@@ -7,48 +7,43 @@ const test_data = [
     { name: 'Test - OS' }
 ];
 
-// ฟังก์ชันสำหรับ action คลิก
-const handleItemClick = (itemName) => {
-  alert(`คุณเลือกเนื้อหา: ${itemName}`);
-};
-
 // รับ 'data' เข้ามาเป็น prop
-function KnowledgeBox({ data }) {
+function KnowledgeBox({ data,onEdit }) {
   // ใช้ 'data' ที่ส่งมาจาก prop (มาจาก API) เป็นหลัก
   // ถ้า data เป็น null หรือว่าง (หรือเกิด error ในการ fetch) ให้ใช้ test_data แทน
   const dataToDisplay = data && data.length > 0 ? data : test_data;
   
   return (
-    <div style={tableStyles.container} className="font-sans">
-      
-      {/* ส่วนหัวตาราง */}
-      <div style={tableStyles.header} className="font-sans">
-        รายชื่อเนื้อหา
-      </div>
+      <div style={tableStyles.container} className="font-sans">
+        <div style={tableStyles.header}>รายชื่อเนื้อหา</div>
 
-      {/* ส่วนเนื้อหาตาราง (n x 1) */}
-      <div style={tableStyles.body}>
-        {dataToDisplay.map((item, index) => {
-          // กำหนดสีพื้นหลังสลับกัน: เขียวเข้ม / เขียวอ่อน
-          const isEven = index % 2 === 0;
-          const rowStyle = isEven ? tableStyles.rowEven : tableStyles.rowOdd;
+        <div style={tableStyles.body}>
+          {dataToDisplay.map((item, index) => {
+            const isEven = index % 2 === 0;
+            const rowStyle = isEven ? tableStyles.rowEven : tableStyles.rowOdd;
 
-          return (
-            <div
-              key={item._id || index} // ใช้ _id เป็น key
-              style={{ ...tableStyles.rowBase, ...rowStyle }}
-              className="font-sans"
-              onClick={() => handleItemClick(item.name)}
-              role="button"
-              tabIndex={0}
-            >
-              {item.name}
-            </div>
-          );
-        })}
+            return (
+              <div
+                key={item._id || index}
+                style={{ ...tableStyles.rowBase, ...rowStyle }}
+                className="font-sans"
+                onClick={() => {
+                  if (item._id) {
+                    onEdit(item._id); 
+                  } else {
+                    alert("รายการนี้ไม่มี ID (ข้อมูลทดสอบ)");
+                  }
+                }}
+                role="button"
+                tabIndex={0}
+              >
+                {item.name}
+              </div>
+            );
+          })}
+        </div>
       </div>
-    </div>
-  );
+    );
 }
 
 export default KnowledgeBox;

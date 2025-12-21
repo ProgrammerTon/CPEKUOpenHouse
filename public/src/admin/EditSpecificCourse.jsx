@@ -1,6 +1,8 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { useParams, useNavigate } from 'react-router-dom';
 import BoxComponent from './BoxComponent'; 
 import DangerModal from './DangerModal';
+
 // ฟังก์ชันสำหรับจัดการการสลับตำแหน่งของรายการ
 const swapElements = (list, index1, index2) => {
     const result = Array.from(list);
@@ -8,13 +10,35 @@ const swapElements = (list, index1, index2) => {
     return result;
 };
 
-function AddCourse() {
+function EditSpecificCourse() {
+    const { id } = useParams(); 
+    const navigate = useNavigate();
+    const [loading, setLoading] = useState(true);
     const [courseTitle, setCourseTitle] = useState('');
     const [courseDescription, setCourseDescription] = useState('');
     const [sections, setSections] = useState([]);
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [sectionToDelete, setSectionToDelete] = useState(null);
     const [editingSection, setEditingSection] = useState(null);
+
+    useEffect(() => {
+        const fetchCourseData = async () => {
+            try {
+                const response = await fetch(`http://localhost:5000/api/courses/${id}`);
+                const data = await response.json();
+                
+                // นำข้อมูลที่ดึงได้มาใส่ใน State
+                setCourseTitle(data.name);
+                setCourseDescription(data.description);
+                setSections(data.sections || []);
+            } catch (err) {
+                alert("ไม่สามารถโหลดข้อมูลคอร์สได้");
+            } finally {
+                setLoading(false);
+            }
+        };
+        fetchCourseData();
+    }, [id]);
 
     const generateUniqueId = () => `section-${Date.now()}-${Math.random()}`;
 
@@ -135,9 +159,31 @@ function AddCourse() {
         </div>
     );
 
-    // ภายใน AddCourse.jsx
+    const handleUpdateSubmit = async () => {
+        const updatedData = {
+            name: courseTitle,
+            description: courseDescription,
+            sections: sections
+        };
 
-    
+        try {
+            const response = await fetch(`http://localhost:5000/api/courses/${id}`, {
+                method: 'PUT', // ใช้ PUT สำหรับการอัปเดตข้อมูลที่มีอยู่แล้ว
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify(updatedData)
+            });
+
+            if (response.ok) {
+                alert('ยืนยันแก้ไขสื่อการสอนสำเร็จ!');
+                navigate('/edit-course'); // กลับไปหน้าสรุป
+            }
+        } catch (err) {
+            alert('เกิดข้อผิดพลาดในการอัปเดตข้อมูล');
+        }
+    };
+
+    if (loading) return <div>กำลังโหลดข้อมูล...</div>;
+
     return (
         <div style={styles.backgroundStyle}>
             {editingSection ? (
@@ -171,7 +217,7 @@ function AddCourse() {
         ) : (
             <>
             <h1 className='font-sans text-main text-center' style={styles.header}>
-                สร้างสื่อการสอน
+                แก้ไขสื่อการสอน
             </h1>
             
             <div style={styles.mainContentArea}>
@@ -215,8 +261,8 @@ function AddCourse() {
                     {renderSections()}
 
                     {/* ปุ่มสร้างเสร็จสิ้น (ล่างขวา) */}
-                    <button style={styles.submitButton} onClick={handleSubmit}>
-                        สร้างเสร็จสิ้น
+                    <button style={styles.submitButton} onClick={handleUpdateSubmit}>
+                        ยืนยันแก้ไขสื่อการสอน
                     </button>
                 </div>
             </div>
@@ -235,7 +281,7 @@ function AddCourse() {
     );
 }
 
-export default AddCourse;
+export default EditSpecificCourse;
 
 const INPUT_BASE = { // สร้าง Base Style สำหรับ Input/Textarea
     width: '100%',

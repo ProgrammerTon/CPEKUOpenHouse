@@ -1,7 +1,7 @@
 import React from 'react';
 
 
-const BoxComponent = ({ type, index, totalSections, title, onClick, onMove, onDelete }) => {
+const BoxComponent = ({ type, index, totalSections, title, onClick, onMove, onDelete, onTitleChange }) => {
     
     const isContent = type === 'content';
     const indexColor = isContent ? '#16A085' : '#8E44AD';
@@ -26,7 +26,17 @@ const BoxComponent = ({ type, index, totalSections, title, onClick, onMove, onDe
                     <div style={{...styles.boxIndex, color: indexColor}}>{(index + 1).toString().padStart(2, '0')}</div>
                     <div style={styles.boxTypeLabel}>{isContent ? 'เนื้อหา' : 'ทดสอบ'}</div>
                 </div>
-                <div style={styles.boxTitle}>{title}</div>
+                <div style={styles.boxTitle}>
+                    <input 
+                        type="text"
+                        value={title}
+                        onChange={(e) => onTitleChange(e.target.value)} // ส่งค่าที่พิมพ์กลับไปอัปเดต State
+                        onClick={(e) => e.stopPropagation()}           // กันไม่ให้คลิกแล้วไปเรียก onClick ของตัว Box
+                        style={styles.titleInput}
+                        placeholder="ชื่อหัวข้อ"
+                        maxLength={100}
+                    />
+                </div>
             </div>
             
             {/* ปุ่มควบคุมลำดับ */}
@@ -147,5 +157,16 @@ const getBoxStyles = (indexColor) => ({
         display: 'flex',
         flexDirection: 'column',
         gap: '2px',
+    },
+    titleInput: {
+        width: '100%',
+        border: 'none',
+        borderBottom: '1px dashed #ccc',
+        padding: '4px 8px',
+        fontSize: '1rem',
+        outline: 'none',
+        backgroundColor: 'transparent',
+        fontFamily: 'inherit',
+        color: '#333',
     },
 });

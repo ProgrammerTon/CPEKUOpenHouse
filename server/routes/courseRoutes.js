@@ -15,20 +15,44 @@ router.get('/', async (req, res) => {
     }
 });
 
-// POST /api/courses
-// สร้าง Document ใหม่ใน Collection 'courses'
-router.post('/', async (req, res) => {
-    const { name, description } = req.body; 
-    
-    if (!name) {
-        return res.status(400).json({ message: 'Course name is required.' });
-    }
 
-    const newCourse = new Course({ name, description });
+router.post('/', async (req, res) => {
+
+    //console.log("ข้อมูลที่ได้รับจาก Frontend:", req.body); 
+    const { name, description, category, sections } = req.body; 
+    const newCourse = new Course({ 
+        name, 
+        description, 
+        category, 
+        sections  
+    });
 
     try {
         const savedCourse = await newCourse.save();
         res.status(201).json(savedCourse);
+    } catch (err) {
+        console.error("❌ บันทึกไม่สำเร็จ:", err);
+        res.status(400).json({ message: err.message });
+    }
+});
+
+router.get('/:id', async (req, res) => {
+    try {
+        const course = await Course.findById(req.params.id);
+        res.json(course);
+    } catch (err) {
+        res.status(404).json({ message: "ไม่พบคอร์สที่ระบุ" });
+    }
+});
+
+router.put('/:id', async (req, res) => {
+    try {
+        const updatedCourse = await Course.findByIdAndUpdate(
+            req.params.id, 
+            req.body, 
+            { new: true } 
+        );
+        res.json(updatedCourse);
     } catch (err) {
         res.status(400).json({ message: err.message });
     }
