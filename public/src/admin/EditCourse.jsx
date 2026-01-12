@@ -67,6 +67,11 @@ function EditCourse() {
           setSelectedCourseId(null);
       }
   };
+  
+  const handleLogout = () => {
+    sessionStorage.removeItem('adminToken'); // หรือ sessionStorage ตามที่คุณเลือกใช้
+    window.location.href = '/login'; // ดีดกลับไปหน้า Login
+  };
 
   return (
     <div style={{...styles.backgroundStyle, minHeight: '100vh'}}>
@@ -106,7 +111,7 @@ function EditCourse() {
       >
         + สร้างสื่อการสอนใหม่
       </button>
-      
+      <button onClick={handleLogout} style={styles.logoutBtn}>ออกจากระบบ</button>
     </div>
   );
 }
@@ -139,5 +144,21 @@ const styles = {
     marginBottom: '20px',
     boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
     transition: 'background 0.3s'
-  }
+  },
+  logoutBtn: {
+        position: 'fixed', 
+        bottom: '30px',   
+        right: '30px',   
+        backgroundColor: '#E74C3C', 
+        color: 'white',
+        border: 'none',
+        padding: '12px 20px',
+        borderRadius: '50px', 
+        cursor: 'pointer',
+        fontWeight: 'bold',
+        fontSize: '0.9rem',
+        boxShadow: '0 4px 12px rgba(231, 76, 60, 0.4)', 
+        zIndex: 1000,
+        transition: 'all 0.3s ease',
+    }
 };

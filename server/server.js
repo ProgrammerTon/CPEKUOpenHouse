@@ -6,6 +6,7 @@ import * as dotenv from 'dotenv';
 
 // import Routes ต่างๆ
 import courseRoutes from './routes/courseRoutes.js'; 
+import authRoutes from './routes/authRoutes.js';
 
 // โหลดตัวแปรจาก .env
 dotenv.config();
@@ -34,7 +35,7 @@ app.get('/', (req, res) => {
 
 // กำหนดเส้นทางสำหรับ APIs
 app.use('/api/courses', courseRoutes); 
-
+app.use('/api/auth', authRoutes);
 
 // เริ่มต้น Server
 app.listen(PORT, () => {

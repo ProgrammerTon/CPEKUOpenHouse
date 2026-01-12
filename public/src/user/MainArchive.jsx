@@ -25,7 +25,7 @@ function MainArchive() {
 
   return (
     <div style={styles.backgroundStyle}>
-      <h1 style={styles.header}>เลือกเนื้อหาที่คุณสนใจ</h1>
+      <h1 className='font-sans text-main text-center' style={styles.headingStyle}>เลือกเนื้อหาที่คุณสนใจ</h1>
       
       {!loading && (
         <div style={styles.tableWrapper}>
@@ -50,14 +50,8 @@ const styles = {
     alignItems: 'center',
     paddingTop: '60px',
   },
-  header: {
-    fontSize: '2.5rem',
-    fontWeight: 'bold',
-    color: '#2C3E50',
-    backgroundColor: 'rgba(255, 255, 255, 0.8)',
-    padding: '10px 30px',
-    borderRadius: '15px',
-    marginBottom: '40px'
+  headingStyle: {
+    marginBottom: '20px',
   },
   tableWrapper: {
     width: '100%',

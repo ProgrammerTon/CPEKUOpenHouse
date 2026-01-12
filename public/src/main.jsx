@@ -7,17 +7,28 @@ import BoxComponent from './admin/BoxComponent.jsx';
 import EditCourse from './admin/EditCourse.jsx';
 import EditSpecificCourse from './admin/EditSpecificCourse.jsx';
 import CourseContent from './user/CourseContent.jsx';
-
+import AdminLogin from './admin/AdminLogin.jsx';
+import ProtectedRoute from './components/ProtectedRoute.jsx';
 import { BrowserRouter, createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 const rootElement = document.getElementById('root');
 
 const router = createBrowserRouter([
   {path:"/",element:<App/>},
+  {path:"/login",element:<AdminLogin/>},
   {path:"/user",element: <MainArchive/>},
-  {path:"/admin",element: <AddCourse/>},
-  {path:"/edit-course",element: <EditCourse/>},
-  {path:"/edit-specific-course/:id",element: <EditSpecificCourse />},
+  {
+    path: "/admin",
+    element: <ProtectedRoute><AddCourse /></ProtectedRoute>
+  },
+  {
+    path: "/edit-course",
+    element: <ProtectedRoute><EditCourse /></ProtectedRoute>
+  },
+  {
+    path: "/edit-specific-course/:id",
+    element: <ProtectedRoute><EditSpecificCourse /></ProtectedRoute>
+  },
   {path:"/course-content/:id",element: <CourseContent />}
 ]);
 
