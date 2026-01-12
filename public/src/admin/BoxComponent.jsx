@@ -9,8 +9,6 @@ const BoxComponent = ({ type, index, totalSections, title, onClick, onMove, onDe
     // ตรวจสอบว่าสามารถเลื่อนขึ้น/ลงได้หรือไม่
     const canMoveUp = index > 0;
     const canMoveDown = index < totalSections - 1;
-
-    // ต้องใช้การผสานสไตล์ร่วมกับ styles object ที่อยู่ด้านล่าง
     const styles = getBoxStyles(indexColor);
 
     return (
@@ -45,7 +43,7 @@ const BoxComponent = ({ type, index, totalSections, title, onClick, onMove, onDe
                     style={styles.deleteButton} 
                     onClick={(e) => {
                         e.stopPropagation(); // หยุดการทำงานของ onClick บน box container
-                        onDelete(); // เรียกใช้ฟังก์ชัน onDelete ที่ส่งมาจาก AddCourse
+                        onDelete(); 
                     }}
                 >
                     ลบ
@@ -53,7 +51,7 @@ const BoxComponent = ({ type, index, totalSections, title, onClick, onMove, onDe
                 <button 
                     style={{...styles.controlButton, opacity: canMoveUp ? 1 : 0.4}} 
                     onClick={(e) => {
-                        e.stopPropagation(); // หยุดการทำงานของ onClick บน box container
+                        e.stopPropagation(); 
                         if (canMoveUp) onMove(index, 'up');
                     }}
                     disabled={!canMoveUp}
@@ -63,7 +61,7 @@ const BoxComponent = ({ type, index, totalSections, title, onClick, onMove, onDe
                 <button 
                     style={{...styles.controlButton, opacity: canMoveDown ? 1 : 0.4}} 
                     onClick={(e) => {
-                        e.stopPropagation(); // หยุดการทำงานของ onClick บน box container
+                        e.stopPropagation(); 
                         if (canMoveDown) onMove(index, 'down');
                     }}
                     disabled={!canMoveDown}

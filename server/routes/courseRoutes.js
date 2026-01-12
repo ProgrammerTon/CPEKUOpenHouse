@@ -58,4 +58,14 @@ router.put('/:id', async (req, res) => {
     }
 });
 
+router.delete('/:id', async (req, res) => {
+  try {
+    const deletedCourse = await Course.findByIdAndDelete(req.params.id);
+    if (!deletedCourse) return res.status(404).json({ message: "ไม่พบข้อมูล" });
+    res.json({ message: "ลบสำเร็จ" });
+  } catch (err) {
+    res.status(500).json({ message: err.message });
+  }
+});
+
 export default router;

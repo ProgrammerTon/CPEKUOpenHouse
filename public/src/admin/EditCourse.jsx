@@ -3,14 +3,16 @@ import 'bootstrap/dist/css/bootstrap.min.css';
 import main_background from '../assets/main_background.png';
 import KnowledgeBox from '../components/KnowledgeBox';
 import { useNavigate } from 'react-router-dom';
+import DangerModal from './DangerModal';
 
 function EditCourse() {
-  // State สำหรับเก็บข้อมูลที่ดึงมาจาก API
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [selectedCourseId, setSelectedCourseId] = useState(null);
   const navigate = useNavigate();
-  // Hook สำหรับดึงข้อมูลจาก /api/items เมื่อ Component โหลดเสร็จ
+
   useEffect(() => {
     const fetchItems = async () => {
       try {
@@ -36,13 +38,44 @@ function EditCourse() {
     fetchItems();
   }, []); 
 
+  // ส่วนที่ 1: เมื่อกดปุ่มลบจากตาราง (แค่เปิด Modal และจำ ID ไว้)
+  const handleInitiateDelete = (courseId) => {
+      setSelectedCourseId(courseId);
+      setIsModalOpen(true);
+  };
+
+  // ส่วนที่ 2: ฟังก์ชันที่จะทำงานเมื่อกดยืนยันใน Modal (ยิง API จริง)
+  const handleConfirmDelete = async () => {
+      if (!selectedCourseId) return;
+
+      try {
+          const response = await fetch(`http://localhost:5000/api/courses/${selectedCourseId}`, {
+              method: 'DELETE',
+          });
+          
+          if (response.ok) {
+              setItems(prevItems => prevItems.filter(item => item._id !== selectedCourseId));
+              alert("ลบสื่อการสอนสำเร็จ");
+          } else {
+              alert("เกิดข้อผิดพลาดในการลบข้อมูล");
+          }
+      } catch (err) {
+          alert("ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้");
+      } finally {
+          // ปิด Modal และรีเซ็ตค่าเสมอ
+          setIsModalOpen(false);
+          setSelectedCourseId(null);
+      }
+  };
+
   return (
     <div style={{...styles.backgroundStyle, minHeight: '100vh'}}>
       
       {/* ส่วนหัวข้อ */}
       <h1 className='font-sans text-main text-center' style={styles.headingStyle}>
-        แก้ไขสื่อการสอน
+        สื่อการสอนทั้งหมด (แอดมิน)
       </h1>
+
 
       {/* ส่วนแสดงผลตามสถานะ */}
       {loading && <p className='font-sans text-center'>กำลังโหลดข้อมูล...</p>}
@@ -50,11 +83,29 @@ function EditCourse() {
       
       {/* แสดง KnowledgeBox เมื่อโหลดข้อมูลสำเร็จ */}
       {!loading && (
-        <KnowledgeBox 
-            data={items} 
-            onEdit={(id) => navigate(`/edit-specific-course/${id}`)} 
-        />
+        <div style={{ width: '100%', maxWidth: '900px', padding: '0 20px' }}> 
+          <KnowledgeBox 
+              data={items} 
+              onEdit={(id) => navigate(`/edit-specific-course/${id}`)} 
+              onDelete={(id) => handleInitiateDelete(id)}
+          />
+        </div>
       )}
+      {isModalOpen && (
+            <DangerModal 
+                title="ยืนยันการลบสื่อการสอน"
+                message="คุณแน่ใจหรือไม่ว่าต้องการลบรายการนี้? การกระทำนี้ไม่สามารถย้อนกลับได้"
+                onClose={() => setIsModalOpen(false)} 
+                onConfirm={handleConfirmDelete}     
+            />
+        )}
+      {/* ปุ่มสร้างใหม่ */}
+      <button 
+        onClick={() => navigate('/admin')} 
+        style={styles.createButton}
+      >
+        + สร้างสื่อการสอนใหม่
+      </button>
       
     </div>
   );
@@ -76,5 +127,17 @@ const styles = {
   },
   headingStyle: {
     marginBottom: '20px',
+  },
+  createButton: {
+    backgroundColor: '#16A085',
+    color: 'white',
+    border: 'none',
+    padding: '12px 25px',
+    borderRadius: '10px',
+    cursor: 'pointer',
+    fontWeight: 'bold',
+    marginBottom: '20px',
+    boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+    transition: 'background 0.3s'
   }
 };

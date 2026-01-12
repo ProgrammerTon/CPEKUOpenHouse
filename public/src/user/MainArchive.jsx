@@ -1,77 +1,69 @@
 import React, { useState, useEffect } from 'react';
-import 'bootstrap/dist/css/bootstrap.min.css';
+import { useNavigate } from 'react-router-dom';
 import main_background from '../assets/main_background.png';
 import KnowledgeBox from '../components/KnowledgeBox';
 
 function MainArchive() {
-  // State สำหรับเก็บข้อมูลที่ดึงมาจาก API
   const [items, setItems] = useState([]);
   const [loading, setLoading] = useState(true);
-  const [error, setError] = useState(null);
+  const navigate = useNavigate();
 
-  // Hook สำหรับดึงข้อมูลจาก /api/items เมื่อ Component โหลดเสร็จ
   useEffect(() => {
     const fetchItems = async () => {
       try {
-        // APIs
         const response = await fetch('http://localhost:5000/api/courses'); 
-        
-        if (!response.ok) {
-          throw new Error(`HTTP error! status: ${response.status}`);
-        }
-        
         const data = await response.json();
         setItems(data);
-        setError(null);
       } catch (err) {
-        console.error("Failed to fetch items:", err);
-        setError("ไม่สามารถดึงข้อมูลเนื้อหาได้: โปรดตรวจสอบ Server และ MongoDB Connection");
         setItems([]);
       } finally {
         setLoading(false);
       }
     };
-
     fetchItems();
   }, []); 
 
   return (
-    <div style={{...styles.backgroundStyle, minHeight: '100vh'}}>
+    <div style={styles.backgroundStyle}>
+      <h1 style={styles.header}>เลือกเนื้อหาที่คุณสนใจ</h1>
       
-      {/* ส่วนหัวข้อ */}
-      <h1 className='font-sans text-main text-center' style={styles.headingStyle}>
-        เลือกเนื้อหาที่คุณสนใจ
-      </h1>
-
-      {/* ส่วนแสดงผลตามสถานะ */}
-      {loading && <p className='font-sans text-center'>กำลังโหลดข้อมูล...</p>}
-      {error && <p className='font-sans text-center' style={{ color: 'red' }}>{error}</p>}
-      
-      {/* แสดง KnowledgeBox เมื่อโหลดข้อมูลสำเร็จ */}
       {!loading && (
-        <KnowledgeBox data={items} /> 
+        <div style={styles.tableWrapper}>
+          <KnowledgeBox 
+            data={items} 
+            // เมื่อ User กด ให้ไปหน้าแสดงเนื้อหา
+            onEdit={(id) => navigate(`/course-content/${id}`)} 
+          /> 
+        </div>
       )}
-      
     </div>
   );
 }
 
-export default MainArchive;
-
-// --- Styles สำหรับ MainArchive ---
 const styles = {
   backgroundStyle: {
     backgroundImage: `url(${main_background})`,
     backgroundSize: 'cover',
-    backgroundPosition: 'center',
-    backgroundRepeat: 'no-repeat',
+    minHeight: '100vh',
     display: 'flex', 
     flexDirection: 'column', 
     alignItems: 'center',
-    paddingTop: '50px', 
-    boxSizing: 'border-box',
+    paddingTop: '60px',
   },
-  headingStyle: {
-    marginBottom: '20px',
+  header: {
+    fontSize: '2.5rem',
+    fontWeight: 'bold',
+    color: '#2C3E50',
+    backgroundColor: 'rgba(255, 255, 255, 0.8)',
+    padding: '10px 30px',
+    borderRadius: '15px',
+    marginBottom: '40px'
+  },
+  tableWrapper: {
+    width: '100%',
+    maxWidth: '800px', // คุมความกว้างไม่ให้ยืดเกินไป
+    padding: '0 20px'
   }
 };
+
+export default MainArchive;

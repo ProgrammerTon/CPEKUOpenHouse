@@ -3,7 +3,7 @@ import { useParams, useNavigate } from 'react-router-dom';
 import BoxComponent from './BoxComponent'; 
 import DangerModal from './DangerModal';
 
-// ฟังก์ชันสำหรับจัดการการสลับตำแหน่งของรายการ
+// --- Logic ยังคงเดิมทุกประการ ---
 const swapElements = (list, index1, index2) => {
     const result = Array.from(list);
     [result[index1], result[index2]] = [result[index2], result[index1]];
@@ -20,14 +20,13 @@ function EditSpecificCourse() {
     const [isModalOpen, setIsModalOpen] = useState(false);
     const [sectionToDelete, setSectionToDelete] = useState(null);
     const [editingSection, setEditingSection] = useState(null);
+    const [scrollPosition, setScrollPosition] = useState(0);
 
     useEffect(() => {
         const fetchCourseData = async () => {
             try {
                 const response = await fetch(`http://localhost:5000/api/courses/${id}`);
                 const data = await response.json();
-                
-                // นำข้อมูลที่ดึงได้มาใส่ใน State
                 setCourseTitle(data.name);
                 setCourseDescription(data.description);
                 setSections(data.sections || []);
@@ -57,55 +56,47 @@ function EditSpecificCourse() {
         if (direction === 'up' && index > 0) newIndex = index - 1;
         else if (direction === 'down' && index < sections.length - 1) newIndex = index + 1;
         else return;
-
         const reorderedSections = swapElements(sections, index, newIndex);
         setSections(reorderedSections);
     };
 
     const handleBoxClick = (section) => {
+        setScrollPosition(window.scrollY);
         setEditingSection(section); 
     };
     
-   const handleUpdateDetail = (id, newDetail) => {
+    const handleUpdateDetail = (id, newDetail) => {
         setSections(prevSections => {
             const updated = prevSections.map(s => 
                 s.id === id ? { ...s, detail: newDetail } : s
             );
-            console.log("Updated sections:", updated);
             return updated;
         });
         setEditingSection(null); 
+
+        requestAnimationFrame(() => {
+            window.scrollTo(0, scrollPosition);
+        });
     };
 
-    const handleSubmit = async () => {
-        console.log("Current sections state:", sections);
+    const handleUpdateSubmit = async () => {
         if (courseTitle.trim() === '' || sections.length === 0) {
             alert('กรุณากรอกชื่อสื่อการสอนและเพิ่มส่วนประกอบอย่างน้อย 1 ส่วน');
             return;
         }
-
-        const courseData = {
-            name: courseTitle, 
-            description: courseDescription,
-            category: "content", 
-            sections: sections  
-        };
-
+        const updatedData = { name: courseTitle, description: courseDescription, sections: sections };
         try {
-            const response = await fetch('http://localhost:5000/api/courses', {
-                method: 'POST',
+            const response = await fetch(`http://localhost:5000/api/courses/${id}`, {
+                method: 'PUT',
                 headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(courseData)
+                body: JSON.stringify(updatedData)
             });
-
             if (response.ok) {
-                alert('สร้างสื่อการสอนสำเร็จและบันทึกลง MongoDB แล้ว!');
-            } else {
-                const errorData = await response.json();
-                alert(`เกิดข้อผิดพลาด: ${errorData.message}`);
+                alert('ยืนยันแก้ไขสื่อการสอนสำเร็จ!');
+                navigate('/edit-course');
             }
         } catch (err) {
-            alert('ไม่สามารถเชื่อมต่อเซิร์ฟเวอร์ได้');
+            alert('เกิดข้อผิดพลาดในการอัปเดตข้อมูล');
         }
     };
 
@@ -114,27 +105,23 @@ function EditSpecificCourse() {
         setIsModalOpen(true);
     };
 
-    // 2. ยืนยันการลบ
     const handleConfirmDelete = () => {
         if (sectionToDelete) {
             setSections(sections.filter(s => s.id !== sectionToDelete));
         }
-        // ปิด Modal และรีเซ็ต State
         setIsModalOpen(false);
         setSectionToDelete(null);
     };
 
-    // 3. ยกเลิกการลบ (ปิด Modal)
     const handleCancelDelete = () => {
         setIsModalOpen(false);
         setSectionToDelete(null);
     };
 
-    // ปุมเลื่อนลำดับ
     const renderSections = () => (
         <div style={styles.listArea}>
             {sections.length === 0 ? (
-                <div style={{ textAlign: 'center', color: '#7F8C8D', padding: '50px 0' }}>
+                <div style={{ textAlign: 'center', color: '#BDC3C7', padding: '50px 0' }}>
                     💡 กดปุ่มด้านบนเพื่อเพิ่มส่วนเนื้อหาหรือแบบทดสอบ
                 </div>
             ) : (
@@ -159,191 +146,170 @@ function EditSpecificCourse() {
         </div>
     );
 
-    const handleUpdateSubmit = async () => {
-        const updatedData = {
-            name: courseTitle,
-            description: courseDescription,
-            sections: sections
-        };
+    if (loading) return <div style={{textAlign:'center', marginTop:'50px'}}>กำลังโหลดข้อมูล...</div>;
 
-        try {
-            const response = await fetch(`http://localhost:5000/api/courses/${id}`, {
-                method: 'PUT', // ใช้ PUT สำหรับการอัปเดตข้อมูลที่มีอยู่แล้ว
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify(updatedData)
-            });
+    const renderOnlyLinks = (text) => {
+        const urlRegex = /(https?:\/\/[^\s]+)/g;
+        const links = text.match(urlRegex); // ค้นหา URL ทั้งหมดแล้วเก็บเป็น Array
+        
+        if (!links) return <span style={{ color: '#999', fontStyle: 'italic' }}>ไม่พบลิงก์ในข้อความ</span>;
 
-            if (response.ok) {
-                alert('ยืนยันแก้ไขสื่อการสอนสำเร็จ!');
-                navigate('/edit-course'); // กลับไปหน้าสรุป
-            }
-        } catch (err) {
-            alert('เกิดข้อผิดพลาดในการอัปเดตข้อมูล');
-        }
+        return links.map((link, i) => (
+            <div key={i} style={{ marginBottom: '5px' }}>
+            <a 
+                href={link} 
+                target="_blank" 
+                rel="noopener noreferrer" 
+                style={{ color: '#007BFF', textDecoration: 'underline', wordBreak: 'break-all' }}
+            >
+                {link}
+            </a>
+            </div>
+        ));
     };
-
-    if (loading) return <div>กำลังโหลดข้อมูล...</div>;
 
     return (
         <div style={styles.backgroundStyle}>
             {editingSection ? (
-            <div style={styles.editWrapper}>
-                <h2 style={{color: '#16A085'}}>แก้ไขเนื้อหา: {editingSection.title}</h2>
-                <textarea
-                    style={styles.detailTextArea}
-                    value={editingSection.detail || ""}
-                    onChange={(e) => {
-                        // อัปเดตเนื้อหาในหน้าแก้ไขชั่วคราว
-                        setEditingSection({...editingSection, detail: e.target.value});
-                    }}
-                    maxLength={1000}
-                    placeholder="พิมพ์รายละเอียดเนื้อหาที่นี่..."
-                />
-                <div style={{display: 'flex', gap: '10px', marginTop: '20px'}}>
-                    <button 
-                        style={styles.backButton} 
-                        onClick={() => setEditingSection(null)}
-                    >
-                        ย้อนกลับ
-                    </button>
-                    <button 
-                        style={styles.saveDetailButton} 
-                        onClick={() => handleUpdateDetail(editingSection.id, editingSection.detail)}
-                    >
-                        บันทึกเนื้อหา
-                    </button>
-                </div>
-            </div>
-        ) : (
-            <>
-            <h1 className='font-sans text-main text-center' style={styles.header}>
-                แก้ไขสื่อการสอน
-            </h1>
-            
-            <div style={styles.mainContentArea}>
-                {/* Panel ซ้าย: ข้อมูลคอร์สหลัก */}
-                <div style={styles.leftPanel}>
-                    <div style={styles.formGroup}>
-                        <label htmlFor="courseTitle" style={styles.label}>ชื่อสื่อการสอน:</label>
-                        <input
-                            id="courseTitle"
-                            type="text"
-                            style={styles.input}
-                            value={courseTitle}
-                            onChange={(e) => setCourseTitle(e.target.value)}
-                            maxLength={100} 
-                            placeholder="ชื่อสื่อการสอน..."
-                        />
+                <div style={styles.editWrapper}>
+                    <h2 style={{color: '#00695C', marginBottom: '20px'}}>แก้ไขเนื้อหา: {editingSection.title}</h2>
+                    <textarea
+                        style={styles.detailTextArea}
+                        value={editingSection.detail || ""}
+                        onChange={(e) => setEditingSection({...editingSection, detail: e.target.value})}
+                        maxLength={1000}
+                        placeholder="พิมพ์รายละเอียดเนื้อหาที่นี่..."
+                    />
+                    {/* ส่วนแสดงเฉพาะลิงก์ที่แก้ไขใหม่ */}
+                    <div style={{
+                        width: '100%', 
+                        marginTop: '15px', 
+                        padding: '15px', 
+                        backgroundColor: '#f1f8f7', 
+                        borderRadius: '10px',
+                        fontSize: '0.95rem',
+                        textAlign: 'left',
+                        border: '1px solid #e0e0e0',
+                        boxSizing: 'border-box'
+                    }}>
+                        <strong style={{ color: '#00695C', display: 'block', marginBottom: '10px' }}>🔗 ลิงก์ที่ตรวจพบในเนื้อหา:</strong>
+                        <div style={{ maxHeight: '150px', overflowY: 'auto' }}>
+                            {renderOnlyLinks(editingSection.detail || "")}
+                        </div>
                     </div>
-
-                    <div style={styles.formGroup}>
-                        <label htmlFor="courseDescription" style={styles.label}>คำอธิบายเบื้องต้น:</label>
-                        <textarea
-                            id="courseDescription"
-                            style={styles.textarea}
-                            value={courseDescription}
-                            onChange={(e) => setCourseDescription(e.target.value)}
-                            maxLength={500}
-                            placeholder="คำอธิบายเนื้อหาโดยย่อ..."
-                        />
+                    <div style={{display: 'flex', gap: '10px', marginTop: '20px', justifyContent: 'center', width: '100%'}}>
+                        <button 
+                            style={styles.backButton} 
+                            onClick={() => {
+                                setEditingSection(null);
+                                requestAnimationFrame(() => {
+                                    window.scrollTo(0, scrollPosition);
+                                });
+                            }}
+                        >
+                            ย้อนกลับ
+                        </button>
+                        <button style={styles.saveDetailButton} onClick={() => handleUpdateDetail(editingSection.id, editingSection.detail)}>บันทึกเนื้อหา</button>
                     </div>
                 </div>
-
-                {/* Panel ขวา: ส่วนประกอบ เนื้อหา/แบบทดสอบ */}
-                <div style={styles.rightPanel}>
+            ) : (
+                <div style={{width: '100%', display: 'flex', flexDirection: 'column', alignItems: 'center'}}>
+                    <h1 className='font-sans' style={styles.header}>แก้ไขสื่อการสอน</h1>
+                    <p style={{color: '#7f8c8d', marginBottom: '30px'}}>จัดการเนื้อหาและแบบทดสอบของคอร์สเรียน</p>
                     
-                    {/* ปุ่มเพิ่มส่วนประกอบ */}
-                    <div style={styles.addButtonGroup}>
-                        <button style={styles.addButton} onClick={handleAddContent}>เพิ่มเนื้อหา</button>
-                        <button style={styles.addButton} onClick={handleAddQuiz}>เพิ่มแบบทดสอบ</button>
+                    <div style={styles.mainContentArea}>
+                        {/* Section 1: ข้อมูลสื่อการสอน */}
+                        <div style={styles.cardPanel}>
+                            <h3 style={styles.panelTitle}>📖 ข้อมูลสื่อการสอน</h3>
+                            <div style={styles.formGroup}>
+                                <label style={styles.label}>ชื่อสื่อการสอน</label>
+                                <input
+                                    type="text"
+                                    style={styles.input}
+                                    value={courseTitle}
+                                    onChange={(e) => setCourseTitle(e.target.value)}
+                                    placeholder="กรอกชื่อสื่อการสอน..."
+                                />
+                            </div>
+                            <div style={styles.formGroup}>
+                                <label style={styles.label}>คำอธิบายเบื้องต้น</label>
+                                <textarea
+                                    style={styles.textarea}
+                                    value={courseDescription}
+                                    onChange={(e) => setCourseDescription(e.target.value)}
+                                    placeholder="คำอธิบายเนื้อหาโดยย่อ..."
+                                />
+                            </div>
+                        </div>
+
+                        {/* Section 2: รายการเนื้อหา */}
+                        <div style={styles.cardPanel}>
+                            <h3 style={styles.panelTitle}>📑 รายการเนื้อหา</h3>
+                            <div style={styles.addButtonGroup}>
+                                <button style={styles.addButton} onClick={handleAddContent}>+ เพิ่มเนื้อหา</button>
+                                <button style={styles.addButton} onClick={handleAddQuiz}>+ เพิ่มแบบทดสอบ</button>
+                            </div>
+                            {renderSections()}
+                        </div>
                     </div>
 
-                    {renderSections()}
-
-                    {/* ปุ่มสร้างเสร็จสิ้น (ล่างขวา) */}
                     <button style={styles.submitButton} onClick={handleUpdateSubmit}>
                         ยืนยันแก้ไขสื่อการสอน
                     </button>
                 </div>
-            </div>
+            )}
+
             {isModalOpen && (
                 <DangerModal
                     title="ยืนยันการลบส่วนประกอบ"
-                    message="คุณแน่ใจหรือไม่ว่าต้องการลบส่วนประกอบนี้? การกระทำนี้ไม่สามารถย้อนกลับได้"
+                    message="คุณแน่ใจหรือไม่ว่าต้องการลบส่วนประกอบนี้?"
                     onClose={handleCancelDelete}
                     onConfirm={handleConfirmDelete}
                 />
-            
             )}
-            </>
-        )}
         </div>
     );
 }
 
-export default EditSpecificCourse;
-
-const INPUT_BASE = { // สร้าง Base Style สำหรับ Input/Textarea
-    width: '100%',
-    padding: '10px',
-    border: '1px solid #BDC3C7',
-    borderRadius: '8px',
-    boxSizing: 'border-box',
-    fontSize: '1rem',
-    backgroundColor: '#FFFF00',
-    maxLength: '100' 
-};
-
-const PANEL_BASE = {
-    flex: 1,
-    height: '500px',
-    borderRadius: '20px',
-    padding: '30px',
-    boxShadow: '0 8px 16px rgba(0, 0, 0, 0.1)',
-    backgroundColor: '#E6F4E6', 
-    border: '3px solid #A9D18E',
-    display: 'flex',
-    flexDirection: 'column',
-};
-
-
+// --- Styles ปรับปรุงใหม่ตามภาพ Reference ---
 const styles = {
     backgroundStyle: {
-        backgroundSize: 'cover',
-        backgroundPosition: 'center',
-        backgroundRepeat: 'no-repeat',
+        backgroundColor: '#F8F9FA', // สีพื้นหลังเทาอ่อนตามภาพ
         display: 'flex', 
         flexDirection: 'column', 
         alignItems: 'center',
-        paddingTop: '20px',
-        paddingBottom: '50px',
+        padding: '40px 20px',
         minHeight: '100vh',
         boxSizing: 'border-box',
-        backgroundColor: '#F7F9FC',
-        fontFamily: 'font-sans'
+        fontFamily: "'Sarabun', sans-serif"
     },
     header: {
-        fontSize: '2.5rem',
+        fontSize: '2.2rem',
         fontWeight: 'bold',
-        marginBottom: '40px',
-        color: '#16A085', 
-        textShadow: '2px 2px 4px rgba(0, 0, 0, 0.2)',
-        padding: '10px 30px',
-        borderRadius: '10px',
-        backgroundColor: 'rgba(255, 255, 255, 0.7)',
+        color: '#2C3E50',
+        marginBottom: '10px',
     },
     mainContentArea: {
         display: 'flex',
-        gap: '40px',
-        width: '90%',
-        maxWidth: '1200px',
+        flexDirection: 'column', // ปรับเป็นแนวตั้งตามภาพที่ซ้อนกัน
+        gap: '30px',
+        width: '100%',
+        maxWidth: '1000px',
     },
-    leftPanel: {
-        ...PANEL_BASE, 
+    cardPanel: {
+        backgroundColor: '#FFFFFF',
+        borderRadius: '15px',
+        padding: '30px',
+        boxShadow: '0 4px 12px rgba(0, 0, 0, 0.05)',
+        border: '1px solid #E0E0E0',
     },
-    rightPanel: {
-        ...PANEL_BASE,
-        
+    panelTitle: {
+        fontSize: '1.4rem',
+        fontWeight: 'bold',
+        color: '#004D40',
+        marginBottom: '20px',
+        borderBottom: '2px solid #F1F1F1',
+        paddingBottom: '10px'
     },
     formGroup: {
         marginBottom: '20px',
@@ -353,57 +319,57 @@ const styles = {
         marginBottom: '8px',
         fontWeight: 'bold',
         color: '#34495E',
-        fontSize: '1.1rem'
     },
     input: {
-        ...INPUT_BASE,
-        height: '45px',
+        width: '100%',
+        height: '50px',
+        padding: '10px 15px',
+        border: '1px solid #DCDFE6',
+        borderRadius: '10px',
+        fontSize: '1rem',
+        backgroundColor: '#FFFFFF',
     },
     textarea: {
-        ...INPUT_BASE,
+        width: '100%',
+        minHeight: '120px',
+        padding: '15px',
+        border: '1px solid #DCDFE6',
+        borderRadius: '10px',
+        fontSize: '1rem',
         resize: 'vertical',
-        minHeight: '200px',
-        maxLength: '500', 
-        padding: '10px',
+        backgroundColor: '#FFFFFF',
     },
     addButtonGroup: {
         display: 'flex',
-        gap: '20px',
+        gap: '15px',
         marginBottom: '20px',
     },
     addButton: {
         flex: 1,
-        padding: '12px 20px',
-        borderRadius: '8px',
-        border: '1px solid #FFC107',
+        padding: '12px',
+        borderRadius: '10px',
+        border: '1px solid #DCDFE6',
+        backgroundColor: '#FFFFFF',
         cursor: 'pointer',
         fontWeight: 'bold',
-        fontSize: '1rem',
-        transition: 'background-color 0.3s',
-        backgroundColor: '#FFEB3B',
+        transition: 'all 0.2s',
+        fontSize: '1rem'
     },
     listArea: {
-        maxHeight: '400px',
-        overflowY: 'auto',
-        paddingRight: '15px',
-        paddingBottom: '10px',
-        flexGrow: 1, 
         marginTop: '10px'
     },
     submitButton: {
-        position: 'absolute',
-        bottom: '20px',
-        right: '30px',
-        backgroundColor: '#FFEB3B',
-        border: '1px solid #FFC107',
-        padding: '12px 30px',
-        borderRadius: '8px',
+        marginTop: '40px',
+        backgroundColor: '#00897B', // สีเขียวหัวเป็ดตามภาพ
+        color: 'white',
+        border: 'none',
+        padding: '15px 40px',
+        borderRadius: '10px',
         cursor: 'pointer',
         fontWeight: 'bold',
         fontSize: '1.1rem',
         boxShadow: '0 4px 6px rgba(0, 0, 0, 0.1)',
-        transition: 'opacity 0.3s',
-        marginTop: '20px'
+        width: 'fit-content'
     },
     editWrapper: {
         backgroundColor: 'white',
@@ -418,30 +384,32 @@ const styles = {
     },
     detailTextArea: {
         width: '100%',
-        height: '300px',
-        padding: '15px',
-        borderRadius: '10px',
-        border: '1px solid #ddd',
+        height: '400px',
+        padding: '20px',
+        borderRadius: '12px',
+        border: '1px solid #E0E0E0',
         fontSize: '1.1rem',
         fontFamily: 'inherit',
-        marginTop: '20px',
-        resize: 'none'
+        resize: 'none',
+        outline: 'none'
     },
     saveDetailButton: {
-        padding: '10px 30px',
-        backgroundColor: '#16A085',
+        padding: '12px 30px',
+        backgroundColor: '#00897B',
         color: 'white',
         border: 'none',
-        borderRadius: '8px',
+        borderRadius: '10px',
         cursor: 'pointer',
         fontWeight: 'bold'
     },
     backButton: {
-        padding: '10px 30px',
-        backgroundColor: '#95a5a6',
+        padding: '12px 30px',
+        backgroundColor: '#BDC3C7',
         color: 'white',
         border: 'none',
-        borderRadius: '8px',
+        borderRadius: '10px',
         cursor: 'pointer'
     }
 };
+
+export default EditSpecificCourse;
