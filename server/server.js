@@ -1,15 +1,12 @@
 // server.js
+import 'dotenv/config';
 import express from 'express';
 import mongoose from 'mongoose';
 import cors from 'cors';
-import * as dotenv from 'dotenv'; 
 
 // import Routes ต่างๆ
 import courseRoutes from './routes/courseRoutes.js'; 
 import authRoutes from './routes/authRoutes.js';
-
-// โหลดตัวแปรจาก .env
-dotenv.config();
 
 // กำหนดพอร์ต
 const PORT = process.env.PORT || 5000;

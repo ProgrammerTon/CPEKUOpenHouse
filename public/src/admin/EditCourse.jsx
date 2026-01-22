@@ -46,11 +46,15 @@ function EditCourse() {
 
   // ส่วนที่ 2: ฟังก์ชันที่จะทำงานเมื่อกดยืนยันใน Modal (ยิง API จริง)
   const handleConfirmDelete = async () => {
+      const token = sessionStorage.getItem('adminToken');
       if (!selectedCourseId) return;
 
       try {
           const response = await fetch(`http://localhost:5000/api/courses/${selectedCourseId}`, {
               method: 'DELETE',
+              headers: { 
+                'Authorization': `Bearer ${token}` 
+              },
           });
           
           if (response.ok) {
@@ -69,8 +73,8 @@ function EditCourse() {
   };
   
   const handleLogout = () => {
-    sessionStorage.removeItem('adminToken'); // หรือ sessionStorage ตามที่คุณเลือกใช้
-    window.location.href = '/login'; // ดีดกลับไปหน้า Login
+    sessionStorage.removeItem('adminToken'); 
+    window.location.href = '/login';
   };
 
   return (

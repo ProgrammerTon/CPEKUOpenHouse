@@ -64,6 +64,8 @@ function AddCourse() {
             return;
         }
 
+        const token = sessionStorage.getItem('adminToken');
+
         const courseData = {
             name: courseTitle, 
             description: courseDescription,
@@ -74,7 +76,10 @@ function AddCourse() {
         try {
             const response = await fetch('http://localhost:5000/api/courses', {
                 method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 
+                'Content-Type': 'application/json',
+                'Authorization': `Bearer ${token}` 
+                },
                 body: JSON.stringify(courseData)
             });
 
@@ -84,6 +89,11 @@ function AddCourse() {
                 setCourseDescription('');
                 setSections([]);
             } else {
+                if (response.status === 401 || response.status === 403) {
+                alert('เซสชันหมดอายุ หรือคุณไม่มีสิทธิ์ กรุณาเข้าสู่ระบบใหม่');
+                navigate('/login')
+                return;
+                }
                 const errorData = await response.json();
                 alert(`เกิดข้อผิดพลาด: ${errorData.message}`);
             }

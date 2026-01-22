@@ -80,6 +80,7 @@ function EditSpecificCourse() {
     };
 
     const handleUpdateSubmit = async () => {
+        const token = sessionStorage.getItem('adminToken');
         if (courseTitle.trim() === '' || sections.length === 0) {
             alert('กรุณากรอกชื่อสื่อการสอนและเพิ่มส่วนประกอบอย่างน้อย 1 ส่วน');
             return;
@@ -88,7 +89,9 @@ function EditSpecificCourse() {
         try {
             const response = await fetch(`http://localhost:5000/api/courses/${id}`, {
                 method: 'PUT',
-                headers: { 'Content-Type': 'application/json' },
+                headers: { 'Content-Type': 'application/json' ,
+                    'Authorization': `Bearer ${token}` 
+                },
                 body: JSON.stringify(updatedData)
             });
             if (response.ok) {

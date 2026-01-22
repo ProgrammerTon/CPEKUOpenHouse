@@ -1,6 +1,6 @@
 import express from 'express';
 import Course from '../models/Course.js'; 
-
+import { verifyAdmin } from '../middleware/auth.js';
 const router = express.Router();
 
 // GET /api/courses
@@ -16,7 +16,7 @@ router.get('/', async (req, res) => {
 });
 
 
-router.post('/', async (req, res) => {
+router.post('/',verifyAdmin, async (req, res) => {
 
     //console.log("ข้อมูลที่ได้รับจาก Frontend:", req.body); 
     const { name, description, category, sections } = req.body; 
@@ -45,7 +45,7 @@ router.get('/:id', async (req, res) => {
     }
 });
 
-router.put('/:id', async (req, res) => {
+router.put('/:id',verifyAdmin, async (req, res) => {
     try {
         const updatedCourse = await Course.findByIdAndUpdate(
             req.params.id, 
@@ -58,7 +58,7 @@ router.put('/:id', async (req, res) => {
     }
 });
 
-router.delete('/:id', async (req, res) => {
+router.delete('/:id',verifyAdmin, async (req, res) => {
   try {
     const deletedCourse = await Course.findByIdAndDelete(req.params.id);
     if (!deletedCourse) return res.status(404).json({ message: "ไม่พบข้อมูล" });
