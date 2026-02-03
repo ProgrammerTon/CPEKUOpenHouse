@@ -10,6 +10,7 @@ function CircleItem({ title, description, imagePath, circleSize,path_index }) {
     //console.log(`Path selected: ${description}`); 
     if (path_index===1) {
       //alert(`คุณเลือกเส้นทาง: ${description}`);
+      window.open('https://effortless-dodol-687152.netlify.app/', '_blank');
     }
     if (path_index===2) {
       //alert(`คุณเลือกเส้นทาง: ${description}`);
@@ -17,7 +18,7 @@ function CircleItem({ title, description, imagePath, circleSize,path_index }) {
     }
     if (path_index===3) {
       //alert(`คุณเลือกเส้นทาง: ${description}`);
-      window.open('https://www.youtube.com', '_blank');
+      window.open('https://huggingface.co/spaces/ProgrammerLungTon/CPEKU-OpenHouse-Chatbot', '_blank');
     }
   };
 
