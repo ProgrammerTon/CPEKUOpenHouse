@@ -13,7 +13,7 @@ router.post('/login', async (req, res) => {
             const token = jwt.sign(
                 { userId: user._id, username: user.username },
                 process.env.JWT_SECRET, 
-                { expiresIn: '1d' } // ระยะเวลา token
+                { expiresIn: '1h' } // ระยะเวลา token
             );
             res.json({ success: true, token });
         } else {
@@ -24,7 +24,7 @@ router.post('/login', async (req, res) => {
     }
 });
 
-// เลิก comment โค้ดส่วนนี้ เมื่อต้องการเพิ่ม admin ในระบบ
+// เลิก comment โค้ดส่วนนี้ และยิงผ่าน postman เมื่อต้องการเพิ่ม admin ในระบบ
 // router.post('/register', async (req, res) => {
 //     try {
 //         const { username, password } = req.body;
