@@ -1,10 +1,10 @@
-# โครงงานเปิดบ้านวิศวกรรมคอมพิวเตอร์ (Computer Engineering Open House Simulation)
+# โครงงานเปิดบ้านวิศวกรรมคอมพิวเตอร์ (CPEKU Open House Simulation)
 
 โครงงานนี้เป็นแอปพลิเคชันที่ถูกพัฒนาขึ้นเพื่อเผยแพร่ข้อมูลและจำลองสภาพแวดล้อมของภาควิชาวิศวกรรมคอมพิวเตอร์ โดยประกอบด้วย 3 ฟีเจอร์หลัก ดังนี้
 
 ---
 
-## ฟีเจอร์ที่ 1: แอปพลิเคชันเดินสำรวจอาคาร (Building Exploration Application)
+## ฟีเจอร์ที่ 1: แอปพลิเคชันเดินสำรวจอาคาร
 
 ![Building Exploration](images/feature1.png)
 
@@ -19,7 +19,7 @@
 
 ---
 
-## ฟีเจอร์ที่ 2: เว็บไซต์ศูนย์รวมข้อมูลรายวิชา (Course Information Website)
+## ฟีเจอร์ที่ 2: เว็บไซต์ศูนย์รวมข้อมูลรายวิชา
 
 ![Course Website](images/feature2.png)
 
@@ -41,7 +41,7 @@
 
 ---
 
-## ฟีเจอร์ที่ 3: ระบบแชทบอทอัจฉริยะ (Intelligent Chatbot System)
+## ฟีเจอร์ที่ 3: ระบบแชทบอทอัจฉริยะ 
 
 ![Chatbot](images/feature3.png)
 
