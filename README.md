@@ -1,4 +1,4 @@
-# โครงงานเปิดบ้านวิศวกรรมคอมพิวเตอร์ (CPEKU Open House Simulation)
+<img width="390" height="83" alt="image" src="https://github.com/user-attachments/assets/609875e4-99e8-42ba-aedd-cafa43abacb2" /># โครงงานเปิดบ้านวิศวกรรมคอมพิวเตอร์ (CPEKU Open House Simulation)
 
 โครงงานนี้เป็นแอปพลิเคชันที่ถูกพัฒนาขึ้นเพื่อเผยแพร่ข้อมูลและเตรียมความพร้อมสำหรับผู้เข้าสนใจศึกษาต่อภาควิชาวิศวกรรมคอมพิวเตอร์ มหาวิทยาลัยเกษตรศษสตร์บางเขน โดยประกอบด้วย 3 ฟีเจอร์หลัก ดังนี้
 
@@ -6,7 +6,7 @@
 
 ## ฟีเจอร์ที่ 1: แอปพลิเคชันเดินสำรวจอาคาร
 
-![Building Exploration](images/feature1.png)
+<!--![Building Exploration](images/feature1.png) -->
 
 แอปพลิเคชันนี้พัฒนาขึ้นโดยใช้เทคโนโลยี **Unity Engine** และเขียนควบคุมกลไกต่าง ๆ ด้วยภาษา **C#**  
 เพื่อจำลองสภาพแวดล้อมภายในอาคารจำนวน **8 ชั้น**
@@ -21,7 +21,7 @@
 
 ## ฟีเจอร์ที่ 2: เว็บไซต์ศูนย์รวมข้อมูลรายวิชา
 
-![Course Website](images/feature2.png)
+<!--![Course Website](images/feature2.png) -->
 
 เว็บไซต์นี้พัฒนาด้วย:
 
@@ -43,7 +43,7 @@
 
 ## ฟีเจอร์ที่ 3: ระบบแชทบอทอัจฉริยะ 
 
-![Chatbot](images/feature3.png)
+<!-- ![Chatbot](images/feature3.png) -->
 
 ระบบแชทบอทพัฒนาด้วยภาษา **Python** โดยใช้เทคนิค:
 
