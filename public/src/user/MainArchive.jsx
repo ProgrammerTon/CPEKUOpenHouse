@@ -31,11 +31,17 @@ function MainArchive() {
         <div style={styles.tableWrapper}>
           <KnowledgeBox 
             data={items} 
-            // เมื่อ User กด ให้ไปหน้าแสดงเนื้อหา
-            onEdit={(id) => navigate(`/course-content/${id}`)} 
+            onEdit={(id) => navigate(`/course-content/${id}`, { replace: true })} 
           /> 
         </div>
       )}
+
+      <button 
+        onClick={() => navigate('/', { replace: true })}
+        style={styles.floatingButton}
+      >
+        กลับสู่หน้าหลัก
+      </button>
     </div>
   );
 }
@@ -55,8 +61,22 @@ const styles = {
   },
   tableWrapper: {
     width: '100%',
-    maxWidth: '800px', // คุมความกว้างไม่ให้ยืดเกินไป
+    maxWidth: '800px',
     padding: '0 20px'
+  },
+  floatingButton: {
+    position: 'fixed',
+    bottom: '30px',
+    right: '30px',
+    padding: '12px 24px',
+    backgroundColor: '#3b82f6',
+    color: 'white',
+    border: 'none',
+    borderRadius: '50px',
+    boxShadow: '0 4px 6px rgba(0,0,0,0.1)',
+    cursor: 'pointer',
+    fontWeight: 'bold',
+    zIndex: 1000,
   }
 };
 
