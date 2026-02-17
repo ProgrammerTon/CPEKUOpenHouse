@@ -9,6 +9,7 @@ import EditSpecificCourse from './admin/EditSpecificCourse.jsx';
 import CourseContent from './user/CourseContent.jsx';
 import AdminLogin from './admin/AdminLogin.jsx';
 import ProtectedRoute from './components/ProtectedRoute.jsx';
+import LogicGame from './user/LogicGame.jsx';
 import { BrowserRouter, createBrowserRouter, RouterProvider } from 'react-router-dom';
 
 const rootElement = document.getElementById('root');
@@ -17,6 +18,7 @@ const router = createBrowserRouter([
   {path:"/",element:<App/>},
   {path:"/login",element:<AdminLogin/>},
   {path:"/user",element: <MainArchive/>},
+  {path:"/logicgame",element: <LogicGame/>},
   {
     path: "/admin",
     element: <ProtectedRoute><AddCourse /></ProtectedRoute>
