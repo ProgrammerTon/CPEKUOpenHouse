@@ -1,44 +1,45 @@
 import React, { useState, useEffect, useCallback } from 'react';
+import { useNavigate } from 'react-router-dom';
 import '../styles/fonts.css';
 import '../styles/colors.css';
 
-function LogicGame() {
-  const [inputs, setInputs] = useState({ A: 0, B: 0 });
+function Test() {
+  const [inputs, setInputs] = useState({ A: 0, B: 0, C: 0, D: 0 });
   const [equation, setEquation] = useState("");
   const [targetValue, setTargetValue] = useState(0);
   const [showModal, setShowModal] = useState({ show: false, isCorrect: false });
+  const [maxDepth, setMaxDepth] = useState(1);
+  
+  const navigate = useNavigate();
 
-  // --- Core Algorithm: Dynamic Logic Generator ---
-
-  const generateEquation = useCallback((depth = 0) => {
-    const operators = ['.', '+']; // AND, OR
-    const variables = ['A', 'B', "A'", "B'"];
+  // --- Algorithm: สุ่มสมการรองรับ A, B, C, D ---
+    const generateEquation = useCallback((currentDepth = 0, depthLimit) => {
+    const operators = ['.', '+'];
+    const variables = ['A', 'B', 'C', 'D', "A'", "B'", "C'", "D'"];
     
-    // ควบคุมความลึก (Depth) เพื่อไม่ให้สมการยาวจนอ่านไม่รู้เรื่อง (แนะนำ 1 หรือ 2)
-    const maxDepth = 2; 
-
-    if (depth >= maxDepth || Math.random() > 0.6) {
-      return variables[Math.floor(Math.random() * variables.length)];
+    // ปรับตรงนี้: ถ้ายังไม่ถึงความลึกที่กำหนด (depthLimit) ให้บังคับสุ่มต่อ 
+    // โดยการเอาเงื่อนไข Math.random() ออก หรือปรับให้โอกาสตัดจบน้อยลงมากในชั้นแรกๆ
+    if (currentDepth >= depthLimit) {
+        return variables[Math.floor(Math.random() * variables.length)];
     }
 
-    const left = generateEquation(depth + 1);
-    const right = generateEquation(depth + 1);
+    const left = generateEquation(currentDepth + 1, depthLimit);
+    const right = generateEquation(currentDepth + 1, depthLimit);
     const op = operators[Math.floor(Math.random() * operators.length)];
 
     return `(${left} ${op} ${right})`;
-  }, []);
+    }, []);
 
-  const evaluateLogic = (eq, a, b) => {
-    // แปลงสัญลักษณ์เป็น JavaScript Logical Operators
+  const evaluateLogic = (eq, vals) => {
     let expression = eq
-      .replace(/A'/g, `(!${a})`)
-      .replace(/B'/g, `(!${b})`)
-      .replace(/A/g, a)
-      .replace(/B/g, b)
+      .replace(/A'/g, `(!${vals.A})`).replace(/A/g, vals.A)
+      .replace(/B'/g, `(!${vals.B})`).replace(/B/g, vals.B)
+      .replace(/C'/g, `(!${vals.C})`).replace(/C/g, vals.C)
+      .replace(/D'/g, `(!${vals.D})`).replace(/D/g, vals.D)
       .replace(/\./g, '&&')
       .replace(/\+/g, '||');
-
     try {
+      // eslint-disable-next-line no-eval
       return eval(expression) ? 1 : 0;
     } catch (e) {
       return 0;
@@ -46,18 +47,20 @@ function LogicGame() {
   };
 
   const generateRandomQuiz = useCallback(() => {
-    const newA = Math.round(Math.random());
-    const newB = Math.round(Math.random());
-    const newEq = generateEquation();
-    const result = evaluateLogic(newEq, newA, newB);
+    const newVals = {
+      A: Math.round(Math.random()),
+      B: Math.round(Math.random()),
+      C: Math.round(Math.random()),
+      D: Math.round(Math.random())
+    };
+    const newEq = generateEquation(0, maxDepth);
+    const result = evaluateLogic(newEq, newVals);
 
-    setInputs({ A: newA, B: newB });
+    setInputs(newVals);
     setEquation(newEq);
     setTargetValue(result);
     setShowModal({ show: false, isCorrect: false });
-  }, [generateEquation]);
-
-  // ----------------------------------------------
+  }, [generateEquation, maxDepth]);
 
   useEffect(() => {
     generateRandomQuiz();
@@ -74,30 +77,41 @@ function LogicGame() {
   return (
     <div style={styles.container}>
       <h2 className="font-sans" style={styles.title}>กิจกรรมทดสอบความสามารถตรรกศาสตร์</h2>
-      <h2 className="font-sans" style={styles.text}>ให้คุณคิด Output ของสมการต่อไปนี้ว่าเป็น 1 หรือ 0</h2>
+      <h2 className="font-sans" style={styles.text}>ดูค่าตัวแปรนำเข้า (Input): สังเกตที่ตารางจะมีตัวแปร A, B, C และ D ซึ่งแต่ละตัวจะถูกสุ่มค่ามาให้เป็น 0 (เท็จ) หรือ 1 (จริง)</h2>
+      <h2 className="font-sans" style={styles.text}>อ่านสมการที่ปรากฏอยู่ด้านล่างตาราง โดยใช้หลักการทำงานของเครื่องหมายตรรกะ . แทน AND, + แทน OR , ' แทน NOT</h2>
+      <h2 className="font-sans" style={styles.text}>และวิเคราะห์ว่าผลลัพธ์ของสมการเป็น 0 หรือ 1</h2>
+      {/* ย้ายส่วนปรับระดับความยากมาไว้ใต้หัวข้อรายละเอียดกิจกรรม */}
+      <div style={styles.difficultyContainer}>
+        <label style={styles.difficultyLabel}>ระดับความยาก {maxDepth}</label>
+        <input 
+          type="range" min="1" max="5" 
+          value={maxDepth} 
+          onChange={(e) => setMaxDepth(parseInt(e.target.value))}
+          style={styles.slider}
+        />
+        <div style={styles.difficultyBadge}>
+            {maxDepth <= 2 ? "Beginner" : maxDepth <= 4 ? "Intermediate" : "Logician"}
+        </div>
+      </div>
+
       <div style={styles.quizCard}>
-        <div style={styles.inputTable}>
-          <div style={styles.tableHeader}>
-            <div style={styles.cell}>Input</div>
-            <div style={styles.cell}>Output</div>
-          </div>
-          <div style={styles.tableRow}>
-            <div style={styles.cell}>A</div>
-            <div style={styles.cell}>{inputs.A}</div>
-          </div>
-          <div style={styles.tableRow}>
-            <div style={styles.cell}>B</div>
-            <div style={styles.cell}>{inputs.B}</div>
-          </div>
+        {/* ตาราง Input A B C D */}
+        <div style={styles.inputGrid}>
+          {Object.entries(inputs).map(([key, val]) => (
+            <div key={key} style={styles.inputBox}>
+              <div style={styles.inputLabel}>{key}</div>
+              <div style={styles.inputValue}>{val}</div>
+            </div>
+          ))}
         </div>
 
-        <div style={styles.equationArea}>
-          <span style={styles.booleanText}>{equation}</span>
+        {/* ย้ายสมการมาอยู่ด้านล่างตัว Output */}
+        <div style={styles.equationWrapper}>
+          <div style={styles.equationLabel}>วิเคราะห์สมการด้านล่าง:</div>
+          <div style={styles.equationText}>{equation}</div>
         </div>
 
-        <button onClick={generateRandomQuiz} style={styles.randomBtn}>
-          Random โจทย์ใหม่
-        </button>
+        <button onClick={generateRandomQuiz} style={styles.randomBtn}>Random โจทย์ใหม่</button>
       </div>
 
       <div style={styles.answerSection}>
@@ -108,15 +122,13 @@ function LogicGame() {
       {showModal.show && (
         <div style={styles.modalOverlay}>
           <div style={styles.modalContent}>
-            <h2 style={{ color: showModal.isCorrect ? '#27ae60' : '#e74c3c' }}>
-              {showModal.isCorrect ? 'ถูกต้อง! เก่งมาก ๆ 🤩' : 'ไม่ถูกนะ 🥹'}
+            <h2 style={{ color: showModal.isCorrect ? '#27ae60' : '#e74c3c', fontSize: '2rem' }}>
+              {showModal.isCorrect ? 'Correct!' : 'Incorrect'}
             </h2>
-            <button 
-                onClick={() => setShowModal({ ...showModal, show: false })} 
-                style={styles.closeBtn}
-            >
-                ย้อนกลับ
-            </button>
+            <div style={{ display: 'flex', gap: '15px', justifyContent: 'center' }}>
+              <button onClick={generateRandomQuiz} style={styles.nextBtn}>โจทย์ต่อไป</button>
+              <button onClick={() => setShowModal({...showModal, show: false})} style={styles.backBtn}>ลองดูอีกที</button>
+            </div>
           </div>
         </div>
       )}
@@ -125,131 +137,43 @@ function LogicGame() {
 }
 
 const styles = {
-  container: {
-    display: 'flex',
-    flexDirection: 'column',
-    alignItems: 'center',
-    justifyContent: 'center',
-    minHeight: '100vh',
-    backgroundColor: '#f0f4f8',
-    padding: '20px',
-  },
-  title: {
-    marginBottom: '40px',
-    fontSize: '1.8rem',
-    fontWeight: 'bold',
-    color: '#34495e',
-    textAlign: 'center'
-  },
-  text: {
-    marginBottom: '40px',
-    fontSize: '1.2rem',
-    color: '#34495e',
-    textAlign: 'center'
-  },
-  quizCard: {
-    display: 'flex',
-    flexDirection: 'row',
-    flexWrap: 'wrap',
-    alignItems: 'center',
-    justifyContent: 'center',
-    gap: '40px',
-    backgroundColor: 'white',
-    padding: '50px',
-    borderRadius: '20px',
-    boxShadow: '0 15px 35px rgba(0,0,0,0.1)',
-    position: 'relative',
-    width: '100%',
-    maxWidth: '850px'
-  },
-  inputTable: {
-    border: '2px solid #2c3e50',
-    borderRadius: '10px',
-    overflow: 'hidden',
-    width: '180px',
-  },
-  tableHeader: {
-    display: 'flex',
-    backgroundColor: '#2c3e50',
-    color: 'white',
-  },
-  tableRow: {
-    display: 'flex',
-    borderTop: '1px solid #2c3e50',
-    backgroundColor: '#fff',
-  },
-  cell: {
-    flex: 1,
-    padding: '12px',
-    textAlign: 'center',
-    fontSize: '1.3rem',
-    fontWeight: 'bold'
-  },
-  equationArea: {
-    fontSize: '2.2rem',
-    fontWeight: '600',
-    color: '#2980b9',
-    textAlign: 'center',
-    padding: '20px'
-  },
-  randomBtn: {
-    position: 'absolute',
-    top: '15px',
-    right: '20px',
-    border: 'none',
-    background: 'none',
-    color: '#95a5a6',
-    cursor: 'pointer',
-    textDecoration: 'underline',
-    fontSize: '0.9rem'
-  },
-  answerSection: {
-    marginTop: '60px',
-    display: 'flex',
-    gap: '80px',
-  },
+  container: { display: 'flex', flexDirection: 'column', alignItems: 'center', justifyContent: 'center', minHeight: '100vh', backgroundColor: '#f4f7f6', padding: '40px' },
+  title: { marginBottom: '10px', fontSize: '2.2rem', fontWeight: 'bold', color: '#2c3e50' },
+  text: { marginBottom: '10px', fontSize: '1.2rem',  color: '#2c3e50' },
+  difficultyContainer: { marginBottom: '30px', textAlign: 'center', backgroundColor: '#fff', padding: '20px', borderRadius: '15px', boxShadow: '0 4px 15px rgba(0,0,0,0.05)', width: '300px' },
+  difficultyLabel: { fontWeight: 'bold', marginBottom: '10px', display: 'block' },
+  difficultyBadge: { marginTop: '8px', fontSize: '0.85rem', color: '#3498db', fontWeight: 'bold' },
+  slider: { width: '100%', cursor: 'pointer' },
+  quizCard: { display: 'flex', flexDirection: 'column', alignItems: 'center', backgroundColor: 'white', padding: '50px', borderRadius: '24px', boxShadow: '0 20px 40px rgba(0,0,0,0.1)', position: 'relative', maxWidth: '800px', width: '100%' },
+  inputGrid: { display: 'grid', gridTemplateColumns: 'repeat(4, 1fr)', gap: '15px', marginBottom: '40px', width: '100%' },
+  inputBox: { border: '2px solid #34495e', borderRadius: '12px', textAlign: 'center', overflow: 'hidden' },
+  inputLabel: { backgroundColor: '#34495e', color: 'white', padding: '8px', fontWeight: 'bold', fontSize: '1.2rem' },
+  inputValue: { padding: '15px', fontSize: '1.8rem', fontWeight: 'bold', color: '#2c3e50' },
+  equationWrapper: { textAlign: 'center', borderTop: '2px dashed #eee', paddingTop: '30px', width: '100%' },
+  equationLabel: { fontSize: '1rem', color: '#7f8c8d', marginBottom: '15px', textTransform: 'uppercase', letterSpacing: '1px' },
+  equationText: { fontSize: '2.4rem', color: '#2980b9', fontWeight: '700', wordBreak: 'break-all', lineHeight: '1.2' },
+  randomBtn: { position: 'absolute', top: '20px', right: '25px', background: 'none', border: 'none', color: '#bdc3c7', textDecoration: 'underline', cursor: 'pointer', fontSize: '0.9rem' },
+  answerSection: { marginTop: '50px', display: 'flex', gap: '40px', },
   answerBtn: {
-    fontSize: '4.5rem',
-    background: 'none',
-    border: '2px solid transparent',
-    borderRadius: '15px',
-    padding: '10px 30px',
+    fontSize: '3rem',
+    fontWeight: 'bold',
+    width: '120px',    
+    height: '120px',    
     cursor: 'pointer',
+    backgroundColor: '#fff',
+    border: '3px solid #2c3e50',
+    borderRadius: '15px', 
     color: '#2c3e50',
-    transition: 'all 0.2s ease',
-    outline: 'none',
-  },
-  modalOverlay: {
-    position: 'fixed',
-    top: 0, left: 0, right: 0, bottom: 0,
-    backgroundColor: 'rgba(0,0,0,0.8)',
     display: 'flex',
     alignItems: 'center',
     justifyContent: 'center',
-    zIndex: 2000,
+    transition: 'all 0.2s ease',
+    boxShadow: '0 6px 0 #2c3e50', 
   },
-  modalContent: {
-    backgroundColor: 'white',
-    padding: '50px',
-    borderRadius: '25px',
-    textAlign: 'center',
-    maxWidth: '400px',
-    width: '90%'
-  },
-  modalText: {
-    fontSize: '1.2rem',
-    margin: '20px 0'
-  },
-  closeBtn: {
-    padding: '12px 30px',
-    backgroundColor: '#27ae60',
-    color: 'white',
-    border: 'none',
-    borderRadius: '10px',
-    cursor: 'pointer',
-    fontSize: '1.1rem',
-    fontWeight: 'bold'
-  }
+  modalOverlay: { position: 'fixed', top: 0, left: 0, right: 0, bottom: 0, backgroundColor: 'rgba(44, 62, 80, 0.9)', display: 'flex', alignItems: 'center', justifyContent: 'center', zIndex: 1000 },
+  modalContent: { backgroundColor: 'white', padding: '50px', borderRadius: '30px', textAlign: 'center', boxShadow: '0 25px 50px rgba(0,0,0,0.2)' },
+  nextBtn: { padding: '12px 25px', backgroundColor: '#2ecc71', color: 'white', border: 'none', borderRadius: '10px', cursor: 'pointer', fontWeight: 'bold', fontSize: '1.1rem' },
+  backBtn: { padding: '12px 25px', backgroundColor: '#e67e22', color: 'white', border: 'none', borderRadius: '10px', cursor: 'pointer', fontWeight: 'bold', fontSize: '1.1rem' }
 };
 
-export default LogicGame;
+export default Test;
