@@ -39,7 +39,8 @@
 - เพิ่มข้อมูลรายวิชา
 - แก้ไขข้อมูลรายวิชา
 - จัดการข้อมูลภายในระบบ
-
+<img src="images/Feature2_1.png" width="50%"> <img src="images/Feature2_2.png" width="50%">
+<img src="images/Feature2_3.png" width="50%"> <img src="images/Feature2_4.png" width="50%"> 
 ---
 
 ## ฟีเจอร์ที่ 3: ระบบแชทบอทอัจฉริยะ 
@@ -57,7 +58,7 @@
 - ตอบคำถามเกี่ยวกับคณะวิศวกรรมคอมพิวเตอร์
 - ดึงข้อมูลจากเอกสาร PDF
 - ให้คำตอบที่ถูกต้องตามข้อมูลจริง
-
+<img src="images/Feature3_1.png" width="50%"> <img src="images/Feature3_2.png" width="50%">
 ---
 
 ## เทคโนโลยีที่ใช้
