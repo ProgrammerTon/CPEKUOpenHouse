@@ -16,7 +16,9 @@
 - เดินสำรวจพื้นที่ภายในอาคารได้อย่างอิสระ  
 - โต้ตอบกับวัตถุต่าง ๆ ภายในฉาก  
 - ดูข้อมูลของจุดที่น่าสนใจในแต่ละชั้น  
-<img src="images/Feature1_1.png" width="32%"> <img src="images/Feature1_2.png" width="32%"> <img src="images/Feature1_3.png" width="32%">
+<img src="images/Feature1_1.png" width="80%">
+ <img src="images/Feature1_2.png" width="80%"> 
+<img src="images/Feature1_3.png" width="80%">
 ---
 
 ## ฟีเจอร์ที่ 2: เว็บไซต์ศูนย์รวมข้อมูลรายวิชา
