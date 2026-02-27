@@ -68,13 +68,14 @@
 <img src="images/Feature3_2.png" width="80%">
 ---
 
-## เทคโนโลยีที่ใช้
+## เทคโนโลยีและภาษาโปรแกรมที่ใช้
 
 - Unity Engine
 - C#
 - React
 - Node.js
 - MongoDB
+- Javascript
 - Python
 - RAG
 - Vector Database
