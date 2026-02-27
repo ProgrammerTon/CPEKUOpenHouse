@@ -40,8 +40,8 @@
 - แก้ไขข้อมูลรายวิชา
 - จัดการข้อมูลภายในระบบ
 
-<img src="images/Feature2_1.png" width="49%"> <img src="images/Feature2_2.png" width="49%">
-<img src="images/Feature2_3.png" width="49%"> <img src="images/Feature2_4.png" width="49%"> 
+<img src="images/Feature2_1.png" width="32%"> <img src="images/Feature2_2.png" width="32%"> <img src="images/Feature2_3.png" width="32%"> 
+
 ---
 
 ## ฟีเจอร์ที่ 3: ระบบแชทบอทอัจฉริยะ 
