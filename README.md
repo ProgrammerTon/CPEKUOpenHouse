@@ -42,7 +42,9 @@
 - แก้ไขข้อมูลรายวิชา
 - จัดการข้อมูลภายในระบบ
 
-<img src="images/Feature2_1.png" width="32%"> <img src="images/Feature2_2.png" width="32%"> <img src="images/Feature2_3.png" width="32%"> 
+<img src="images/Feature2_1.png" width="80%"> 
+<img src="images/Feature2_2.png" width="80%"> 
+<img src="images/Feature2_3.png" width="80%"> 
 
 ---
 
@@ -62,7 +64,8 @@
 - ดึงข้อมูลจากเอกสาร PDF
 - ให้คำตอบที่ถูกต้องตามข้อมูลจริง
 
-<img src="images/Feature3_1.png" width="49%"> <img src="images/Feature3_2.png" width="49%">
+<img src="images/Feature3_1.png" width="80%"> 
+<img src="images/Feature3_2.png" width="80%">
 ---
 
 ## เทคโนโลยีที่ใช้
