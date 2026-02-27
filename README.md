@@ -58,7 +58,8 @@
 - ตอบคำถามเกี่ยวกับคณะวิศวกรรมคอมพิวเตอร์
 - ดึงข้อมูลจากเอกสาร PDF
 - ให้คำตอบที่ถูกต้องตามข้อมูลจริง
-<img src="images/Feature3_1.png" width="50%"> <img src="images/Feature3_2.png" width="50%">
+- 
+<img src="images/Feature3_1.png" width="49%"> <img src="images/Feature3_2.png" width="49%">
 ---
 
 ## เทคโนโลยีที่ใช้
